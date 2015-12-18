@@ -1,19 +1,59 @@
-//MLL - imported from assignment 1
-var app = angular.module('simple-chart', []);
+ app = angular.module('simple-chart', []);
 google.load("visualization", "1", {packages:["corechart"]});
 
 app.controller('MainController', ['$scope', '$http',  function($scope, $http) {
   $http.get('/data').success(function(data){
     
-    var dataArray = formatDataForView(data);
-    
-    console.table(data);
+  var dataArray = formatDataForView(data);
+
+  var table = google.visualization.arrayToDataTable(dataArray, false);
+  var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+
   
-    var table = google.visualization.arrayToDataTable(dataArray, false);
-    var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+  var options = {
+    title:'Sale Performance over Years ',
+    //subtitle: 'League of Legends World Championship vs Dota2 The International',
+    //chart: {title:'eSports Prize Pools',
+    //subtitle: 'League of Legends World Championship vs Dota2 The International '},
+    series:{
+      0:{color:'#000066'},
+      1:{color: '#990000'}
+    },
+
+    width: 900,
+    hAxis: {
+      title: 'Year',
+      titleTextStyle: {
+        
+        italic: false,
+        bold: true,
+      },
+      format: '',
+      gridlines: {count: 5},
+    },
     
-    var options = {'title':'Company Sales'}
-    chart.draw(table, options);
+    
+    
+    vAxis: {
+      title: 'In Billions',
+      titleTextStyle:{
+        bold: true,
+        italic: true,
+      },
+      textStyle: {
+        color: 'green'
+        
+      },
+     format: 'currency',
+      gridlines: {count: 11},
+      
+    }
+    
+      
+
+  };
+  chart.draw(table, options);
+  
 
   });
 }]);
@@ -39,4 +79,5 @@ function formatDataForView(data) {
     });
   
     return dataArray;
+
 }
